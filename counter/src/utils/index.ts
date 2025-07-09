@@ -18,9 +18,10 @@ export function useObservable<T>({
     initialValue,
 }: ObservableWrapper<T>){
     const [state, setState] = useState<T>(()=> initialValue);
-
+    
     useEffect(()=> {
         const sub = observable.subscribe(setState);
+        
         return () => sub.unsubscribe();
     }, [observable]);
 

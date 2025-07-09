@@ -9,8 +9,8 @@ describe('Testing app', () => {
     test('Testing increment', async () => {
         render(<App />)
       
-        const button = screen.getByRole('button')
-      
+        const button = screen.getByRole('button', { name: /increment-button/i })
+        
         expect(await screen.findByRole('heading', {
           name: /counter: 0/i
         })).toBeDefined()
@@ -29,4 +29,27 @@ describe('Testing app', () => {
       
         screen.logTestingPlaygroundURL()
       })
+    test('Testing decrement', async () => {
+      render(<App />)
+    
+      const deButton = screen.getByRole('button', { name: /decrement-button/i })
+      
+      expect(await screen.findByRole('heading', {
+        name: /counter: 0/i
+      })).toBeDefined()
+    
+      userEvent.click(deButton)
+    
+      expect(await screen.findByRole('heading', {
+        name: /counter: -1/i
+      })).toBeDefined()
+    
+      userEvent.click(deButton)
+    
+      expect(await screen.findByRole('heading', {
+        name: /counter: -2/i
+      })).toBeDefined()
+    
+      screen.logTestingPlaygroundURL()
+    })
 })
