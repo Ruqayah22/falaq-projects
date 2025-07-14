@@ -4,11 +4,18 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { useCreateAppStore } from "./app.context";
 import { useObservable } from "../utils";
 import '../style/index.css'
+import * as z from "zod";
 
-type Inputs = {
-  text: string;
-};
+// type Inputs = {
+//   text: string;
+// };
 
+// zod 
+const Inputs = z.object({
+  text: z.string(),
+});
+
+type Inputs = z.infer<typeof Inputs>;
 
 export default function AppView() {
   const { register, handleSubmit, reset } = useForm<Inputs>();
