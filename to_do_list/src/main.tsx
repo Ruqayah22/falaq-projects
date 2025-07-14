@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-// import {App} from './app/index'
+import App from './app';
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <h1>hello world</h1>
-    {/* <App /> */}
-  </StrictMode>,
-)
+    {/* <h1>hello world</h1> */}
+    <App />
+  </StrictMode>
+);
