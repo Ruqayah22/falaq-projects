@@ -2,6 +2,7 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useCreateAppStore } from "./app.context";
 import { useObservable } from "../utils";
+import '../style/index.css'
 
 type Inputs = {
   text: string;
@@ -28,16 +29,22 @@ export default function AppView() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register("text")} placeholder="Type something..." />
+    <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input
+          className="inputText"
+          {...register("text")}
+          placeholder="Type something..."
+        />
 
-      <input type="submit" />
+        <input className="btn" type="submit" />
 
-      <ul>
-        {ToDoItems.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
-    </form>
+        <ul>
+          {ToDoItems.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      </form>
+    </div>
   );
 }
