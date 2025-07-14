@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
 type Inputs = {
-  text: string
+  text: string;
 };
 
 export default function App() {
@@ -12,28 +12,31 @@ export default function App() {
     // watch,
     // formState: { errors },
     reset,
-  } = useForm<Inputs>({
-    defaultValues: {
-      text: "",
-    },
-  });
-//   const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  } = useForm<Inputs>(
+    // {
+//     defaultValues: {
+//       text: "",
+//     },
+//   }
+);
+  //   const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
 
-//   console.log(watch("text")); // watch input value by passing the name of it
+  //   console.log(watch("text")); // watch input value by passing the name of it
 
-    // const toDo = watch("text"); 
+  // const toDo = watch("text");
 
-    const [items, setItems] = useState<string[]>([]);
+  const [items, setItems] = useState<string[]>([]);
 
-    const onSubmit: SubmitHandler<Inputs> = (data) => {
-      setItems((prev) => [...prev, data.text]);
-      reset();
-    };
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    setItems((prev) => [...prev, data.text]);
+    // console.log(data.text);
+    reset();
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <input
-        defaultValue="test"
+        // defaultValue="test"
         {...register("text")}
         placeholder="Type something..."
       />
@@ -49,7 +52,6 @@ export default function App() {
           <li key={index}>{item}</li>
         ))}
       </ul>
-
     </form>
   );
 }
