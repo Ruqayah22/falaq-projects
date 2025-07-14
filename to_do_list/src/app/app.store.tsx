@@ -1,4 +1,5 @@
 import { scan, shareReplay, Subject } from "rxjs";
+import  { withInitialValue } from "../utils";
 
 export const createToDoStore = () => {
 
@@ -11,10 +12,10 @@ const items$ = addItem$.pipe(
 
   return {
     state: {
-      items: items$,
+      items$: withInitialValue(items$, []),
     },
     actions: {
-      addItem: (item: string) => addItem$.next(item)
+      addItem: (item: string) => addItem$.next(item),
     },
   };
 };
