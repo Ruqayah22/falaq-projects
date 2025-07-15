@@ -1,7 +1,8 @@
 // import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import {zodResolver} from '@hookform/resolvers/zod';
 
-import { useCreateAppStore } from "./app.context";
+import { useAppStore } from "./app.context";
 import { useObservable } from "../utils";
 import '../style/index.css'
 import * as z from "zod";
@@ -11,20 +12,27 @@ import * as z from "zod";
 // };
 
 // zod 
-const Inputs = z.object({
-  text: z.string(),
+const InputsSchema = z.object({
+  text: z.string().min(1).max(10),
 });
 
-type Inputs = z.infer<typeof Inputs>;
+type Inputs = z.infer<typeof InputsSchema>;
 
 export default function AppView() {
-  const { register, handleSubmit, reset } = useForm<Inputs>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Inputs>({
+    resolver: zodResolver(InputsSchema),
+  });
 
 //   const [items, setItems] = useState<string[]>([]);
   const {
     state: { items$ },
     actions: { addItem },
-  } = useCreateAppStore();
+  } = useAppStore();
 
   const ToDoItems = useObservable(items$);
 
@@ -42,7 +50,7 @@ export default function AppView() {
           {...register("text")}
           placeholder="Type something..."
         />
-
+        <p>{errors.text?.message}</p>
         <input className="btn" type="submit" />
 
         <ul>
