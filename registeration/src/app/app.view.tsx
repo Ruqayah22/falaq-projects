@@ -1,30 +1,34 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useCreateAppStore } from "./app.context";
+import { useAppStore } from "./app.context";
 import { useObservable } from "../utils";
 import "../style/index.css";
 import * as z from "zod";
 
-
-const Inputs = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
+const InputsSchema = z.object({
+  firstName: z.string().min(1).max(12),
+  lastName: z.string().min(1).max(12),
   email: z.email(),
-  password: z.string(),
+  password: z.string().min(8),
 });
 
-type Inputs = z.infer<typeof Inputs>;
+type Inputs = z.infer<typeof InputsSchema>;
 
 export default function AppView() {
-  const { register, handleSubmit, reset } = useForm<Inputs>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Inputs>({ resolver: zodResolver(InputsSchema) });
 
   const {
     state: { items$ },
     actions: { addItem },
-  } = useCreateAppStore();
+  } = useAppStore();
 
   const registerItems = useObservable(items$);
-    
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     addItem(data.firstName);
@@ -33,7 +37,6 @@ export default function AppView() {
     addItem(data.password);
     reset();
     // console.log(data);
-    
   };
 
   console.log(registerItems);
@@ -42,25 +45,30 @@ export default function AppView() {
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
+          aria-label="firstName"
           className="inputText"
           {...register("firstName")}
           placeholder="Type something..."
         />
+        <p>{errors.firstName?.message}</p>
         <input
           className="inputText"
           {...register("lastName")}
           placeholder="Type something..."
         />
+        <p>{errors.lastName?.message}</p>
         <input
           className="inputText"
           {...register("email")}
           placeholder="Type something..."
         />
+        <p>{errors.email?.message}</p>
         <input
           className="inputText"
           {...register("password")}
           placeholder="Type something..."
         />
+        <p>{errors.password?.message}</p>
 
         <input className="btn" type="submit" />
 
