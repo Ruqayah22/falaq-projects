@@ -1,7 +1,7 @@
 import { scan, shareReplay, Subject } from "rxjs";
 import { withInitialValue } from "../utils";
 
-export const createToDoStore = () => {
+export const createRegisterStore = () => {
   const addItem$ = new Subject<string>();
 
   const items$ = addItem$.pipe(

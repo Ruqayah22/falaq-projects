@@ -30,13 +30,39 @@ export default function AppView() {
 
   const registerItems = useObservable(items$);
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    addItem(data.firstName);
-    addItem(data.lastName);
-    addItem(data.email);
-    addItem(data.password);
-    reset();
-    // console.log(data);
+  // const onSubmit: SubmitHandler<Inputs> = (data) => {
+  //   addItem(data.firstName);
+  //   addItem(data.lastName);
+  //   addItem(data.email);
+  //   addItem(data.password);
+  //   reset();
+  //   // console.log(data);
+  // };
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      const res = await fetch("http://localhost:3000/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) throw new Error("Submission failed");
+
+      const result = await res.json();
+      console.log("Server response:", result);
+
+      // You can update local RxJS state here too
+      addItem(data.firstName);
+      addItem(data.lastName);
+      addItem(data.email);
+      addItem(data.password);
+      reset();
+    } catch (err) {
+      console.error("AJAX submit error:", err);
+    }
   };
 
   console.log(registerItems);

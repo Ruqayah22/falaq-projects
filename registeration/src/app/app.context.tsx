@@ -1,8 +1,8 @@
 import { createContext, useContext, useRef } from "react";
 
-import { createToDoStore } from "./app.store";
+import { createRegisterStore } from "./app.store";
 
-export type ToDoStore = ReturnType<typeof createToDoStore>;
+export type ToDoStore = ReturnType<typeof createRegisterStore>;
 export const AppStoreContext = createContext({} as ToDoStore);
 
 export function useAppStore() {
@@ -12,7 +12,7 @@ export function useAppStore() {
 export function useCreateAppStore() {
   const storeRef = useRef<ToDoStore | null>(null);
   if (storeRef.current === null) {
-    storeRef.current = createToDoStore();
+    storeRef.current = createRegisterStore();
   }
 
   const store = storeRef.current;
