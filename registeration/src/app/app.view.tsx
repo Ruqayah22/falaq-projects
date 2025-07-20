@@ -20,6 +20,7 @@ export default function AppView() {
     register,
     handleSubmit,
     reset,
+    // watch,
     formState: { errors },
   } = useForm<Inputs>({ resolver: zodResolver(InputsSchema) });
 
@@ -59,6 +60,7 @@ export default function AppView() {
       addItem(data.lastName);
       addItem(data.email);
       addItem(data.password);
+      // addItem(data);
       reset();
     } catch (err) {
       console.error("AJAX submit error:", err);
@@ -98,13 +100,31 @@ export default function AppView() {
 
         <input className="btn" type="submit" />
 
-        {/* <ul>
+        <ul>
           {registerItems.map((item, index) => (
             <li key={index}>{item}</li>
           ))}
         </ul>
-         */}
+        
+
+         {/* Cards display */}
+      {/* <div className="card">
+        {registerItems.map((item, index) => (
+          <div 
+          key={index} 
+          className="container">
+            <h4>
+              <b>
+                {item.firstName} {item.lastName}
+              </b>
+            </h4>
+            <p>Email: {item.email}</p>
+            <p>Password: {item.password}</p>
+          </div>
+        ))} 
+        </div> */}
       </form>
+      
     </div>
   );
 }

@@ -5,7 +5,8 @@ import { InputsSchema } from './register/register.module';
 
 @Controller('submit')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  // constructor(private readonly appService: AppService) {}
+  constructor(private appService: AppService) {}
 // @Post()
 //   handleSubmit(@Body() input: InputsSchema) {
 //     return this.appService.saveForm(input);
@@ -15,9 +16,12 @@ export class AppController {
   //   return this.appService.getHello();
   // }
   @Get()
-  getAllInputs(): InputsSchema[] {
+  async getAllInputs(): Promise<InputsSchema[]> {
     return this.appService.getAllInputs();
   }
+  // getAllInputs(): InputsSchema[] {
+  //   return this.appService.getAllInputs();
+  // }
   //  @Post()
   // create(
   //   @Body('firstName')firstName: string,
@@ -29,8 +33,11 @@ export class AppController {
   // }
 
   @Post()
-  create(@Body() input: InputsSchema): InputsSchema{
-    return this.appService.createInput(input);
+  // create(@Body() input: InputsSchema): InputsSchema{
+  //   return this.appService.createInput(input);
+  // }
+  async create(@Body() input: InputsSchema) {
+    this.appService.createInput(input);
   }
 }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import type { InputsSchema } from './register/register.module';
-import { create } from '../node_modules/@types/istanbul-reports/index.d';
+// import { create } from '../node_modules/@types/istanbul-reports/index.d';
 
 @Injectable()
 export class AppService {
