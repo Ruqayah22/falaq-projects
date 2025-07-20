@@ -7,21 +7,21 @@ import { InputsSchema } from './register/register.module';
 export class AppController {
   // constructor(private readonly appService: AppService) {}
   constructor(private appService: AppService) {}
-// @Post()
-//   handleSubmit(@Body() input: InputsSchema) {
-//     return this.appService.saveForm(input);
-//   }
+  // @Post()
+  //   handleSubmit(@Body() input: InputsSchema) {
+  //     return this.appService.saveForm(input);
+  //}
   // @Get()
   // getHello(): string {
   //   return this.appService.getHello();
   // }
   @Get()
-  async getAllInputs(): Promise<InputsSchema[]> {
-    return this.appService.getAllInputs();
-  }
-  // getAllInputs(): InputsSchema[] {
+  // getAllInputs(): Promise<InputsSchema[]> {
   //   return this.appService.getAllInputs();
   // }
+  getAllInputs(): InputsSchema[] {
+    return this.appService.getAllInputs();
+  }
   //  @Post()
   // create(
   //   @Body('firstName')firstName: string,
@@ -36,8 +36,10 @@ export class AppController {
   // create(@Body() input: InputsSchema): InputsSchema{
   //   return this.appService.createInput(input);
   // }
-  async create(@Body() input: InputsSchema) {
+  // async create(@Body() input: InputsSchema) {
+  //   this.appService.createInput(input);
+  // }
+  create(@Body() input: InputsSchema) {
     this.appService.createInput(input);
   }
 }
-

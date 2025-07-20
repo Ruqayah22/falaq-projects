@@ -3,7 +3,6 @@ export class InputsSchema {
   lastName: string;
   email: string;
   password: string;
-
 }
 
 // import { IsEmail, IsNotEmpty, IsString, MinLength, MaxLength } from 'class-validator';
