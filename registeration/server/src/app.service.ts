@@ -4,11 +4,11 @@ import type { InputsSchema } from './register/register.module';
 
 @Injectable()
 export class AppService {
-   private inputsR: InputsSchema[] = [];
+  private inputsR: InputsSchema[] = [];
 
-   getAllInputs(): InputsSchema[] {
+  getAllInputs(): InputsSchema[] {
     return this.inputsR;
-   }
+  }
   //  createInput(firstName: string,
   // lastName: string,
   // email: string,
@@ -23,9 +23,8 @@ export class AppService {
   //   return inputC;
   // }
 
-  createInput(inputC: InputsSchema): InputsSchema{
+  createInput(inputC: InputsSchema): InputsSchema {
     this.inputsR.push(inputC);
     return inputC;
   }
-  
 }

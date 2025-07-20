@@ -52,7 +52,10 @@ export default function AppView() {
 
       if (!res.ok) throw new Error("Submission failed");
 
-      const result = await res.json();
+      // const result = await res.json();
+
+      const text = await res.text();
+      const result = text ? JSON.parse(text) : {};
       console.log("Server response:", result);
 
       // You can update local RxJS state here too

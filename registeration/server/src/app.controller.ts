@@ -16,8 +16,8 @@ export class AppController {
   //   return this.appService.getHello();
   // }
   @Get()
-  // getAllInputs(): Promise<InputsSchema[]> {
-  //   return this.appService.getAllInputs();
+  // async getAllInputs(): Promise<InputsSchema[]> {
+  //   return await this.appService.getAllInputs();
   // }
   getAllInputs(): InputsSchema[] {
     return this.appService.getAllInputs();
@@ -33,13 +33,21 @@ export class AppController {
   // }
 
   @Post()
-  // create(@Body() input: InputsSchema): InputsSchema{
+  // create(@Body() input: InputsSchema): InputsSchema[] {
   //   return this.appService.createInput(input);
   // }
   // async create(@Body() input: InputsSchema) {
   //   this.appService.createInput(input);
   // }
+  // create(@Body() input: InputsSchema) {
+  //   this.appService.createInput(input);
+  // }
   create(@Body() input: InputsSchema) {
     this.appService.createInput(input);
+    return { message: 'Input saved successfully' };
   }
+  // create(@Body() input: InputsSchema) {
+  //   const saved = this.appService.createInput(input);
+  //   return { message: 'Input saved', data: saved };
+  // }
 }
