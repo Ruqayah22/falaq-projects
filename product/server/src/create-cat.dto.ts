@@ -1,5 +1,6 @@
-export class CreateCatDto {
-  name: string;
-  age: number;
-  breed: string;
+export class CreateProductDto {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
 }

@@ -2,63 +2,46 @@ import {
   Controller, 
   Get, 
   Post,
-  // Param,
-  Body} from '@nestjs/common';
-import type { CreateCatDto } from './create-cat.dto';
-// import { AppService } from './app.service';
+  Body,
+  HttpCode,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Delete} from '@nestjs/common';
+import type { CreateProductDto } from './create-cat.dto';
+import { AppService } from './app.service';
 
-// @Controller()
-// export class AppController {
-//   constructor(private readonly appService: AppService) {}
-
-//   @Get()
-//   getHello(): string {
-//     return this.appService.getHello();
-//   }
-// }
-
-@Controller('cats')
+@Controller('product')
 export class CatsController {
-  // @Get()
-  // findAll(): string {
-  //   return 'This action returns all cats';
-  // }
-  // @Get('oneCat')
-  // findByOne(): string {
-  //   return 'This action returns one cat';
-  // }
-  // @Post('createCat')
-  // create(): string {
-  //   return 'This action adds a new cat';
-  // }
-  // @Get('createCat')
-  // getCreateCat(): string {
-  //   return 'This action (GET) adds a new cat — test only';
-  // }
-
-  // @Post()
-  // create(): string {
-  //   return 'This action adds a new cat';
-  // }
+  constructor(private appService: AppService) {}
 
   @Get()
-  findAll(): string {
-    return 'This action returns all cats';
+  getAllProducts(): CreateProductDto[] {
+    return this.appService.getAllProducts();
   }
 
-  // @Get(':id')
-  // findOne(@Param() params: any): string {
-  //   console.log(params.id);
-  //   return `This action returns a #${params.id} cat`;
+  // @Get('post')
+  // create(@Body() CreateProductDto: CreateProductDto) {
+  //   return this.appService.createProduct(CreateProductDto);
   // }
-  // @Get(':id')
-  // findOne(@Param('id') id: string): string {
-  //   return `This action returns a #${id} cat`;
-  // }
-
-  @Get('post')
-  create(@Body() createCatDto: CreateCatDto) {
-    // console.log(createCatDto);
-    return 'This action adds a new cat';
+  @Post()
+  @HttpCode(201)
+  create(@Body() CreateProductDto: CreateProductDto) {
+    return this.appService.createProduct(CreateProductDto);
+  }
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.appService.findOne(id);
+  }
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() productUpdate: CreateProductDto,
+  ) {
+    return this.appService.update(id, productUpdate);
+  }
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.appService.deleteOne(id);
   }
 }
