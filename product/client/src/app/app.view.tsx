@@ -6,8 +6,11 @@ import { useObservable } from "../utils";
 import "../style/index.css";
 import * as z from "zod";
 
+import { ajax } from "rxjs/ajax";
+import { catchError } from "rxjs/operators";
+import { of } from "rxjs";
+
 import { MdOutlineDelete } from "react-icons/md";
-// import { CiEdit } from "react-icons/ci";
 import { BiEditAlt } from "react-icons/bi";
 
 const InputsSchema = z.object({
@@ -16,15 +19,7 @@ const InputsSchema = z.object({
   price: z.coerce.number(), //z.number(),
 });
 
-// const InputsSchema: z.ZodType<{
-//   title: string;
-//   description: string;
-//   price: number;
-// }> = z.object({
-//   title: z.string().min(1).max(20),
-//   description: z.string().min(20),
-//   price: z.coerce.number(),
-// });
+
 
 type Inputs = z.infer<typeof InputsSchema>;
 
@@ -36,50 +31,77 @@ export default function AppView() {
     formState: { errors },
   } = useForm<Inputs>({ resolver: zodResolver(InputsSchema) });
 
-  // const onSubmit = (data: Inputs) => {
-  //   console.log(data);
-  // };
+  
 
   const {
     state: { items$ },
     // actions: { addItem },
     actions: {
   addItem,
-  editItem,
-  deleteItem
+  // editItem,
+  // deleteItem
 }
   } = useAppStore();
 
   const registerItems = useObservable(items$);
 
   
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    try {
-      const res = await fetch("http://localhost:3000/product", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+  // const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  //   try {
+  //     const res = await fetch("http://localhost:3000/product", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(data),
+  //     });
+
+  //     if (!res.ok) throw new Error("Submission failed");
+
+  //     const result = await res.json();
+  //     console.log("Server response:", result);
+
+  //     // You can update local RxJS state here too
+  //     // addItem(data.title);
+  //     // addItem(data.description);
+  //     // addItem(data.price.toString());
+  //     addItem(data);
+  //     reset();
+  //   } catch (err) {
+  //     console.error("AJAX submit error:", err);
+  //   }
+  // };
+
+  
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    ajax
+      .post("http://localhost:3000/product", data, {
+        "Content-Type": "application/json",
+      })
+      .pipe(
+        catchError((error) => {
+          console.error("AJAX submit error:", error);
+          return of(error); 
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          console.log("Server response:", response.response);
+          
+          // addItem(data.title);
+          // addItem(data.description);
+          // addItem(data.price.toString());
+
+          addItem(data);
+          reset();
         },
-        body: JSON.stringify(data),
+        error: (err) => {
+          console.error("Subscription error:", err);
+        },
       });
-
-      if (!res.ok) throw new Error("Submission failed");
-
-      const result = await res.json();
-      console.log("Server response:", result);
-
-      // You can update local RxJS state here too
-      // addItem(data.title);
-      // addItem(data.description);
-      // addItem(data.price.toString());
-      addItem(data);
-      reset();
-    } catch (err) {
-      console.error("AJAX submit error:", err);
-    }
   };
 
-  console.log(registerItems);
+  // console.log(registerItems);
 
   return (
     <div>
@@ -137,9 +159,12 @@ export default function AppView() {
                 <td>{item.description}</td>
                 <td>{item.price}</td>
                 <td className="icons">
-                  <MdOutlineDelete onClick={() => deleteItem(item.id)} />
-                  {/* <CiEdit onClick={() => setEditingItem(item)} /> */}
-                  <BiEditAlt onClick={() => editItem(item)} />
+                  <MdOutlineDelete 
+                  // onClick={() => deleteItem(item.id)} 
+                    />
+                  <BiEditAlt 
+                  // onClick={() => editItem(item)} 
+                    />
                 </td>
               </tr>
             ))}
