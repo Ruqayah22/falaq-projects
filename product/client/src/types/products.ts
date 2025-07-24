@@ -2,8 +2,8 @@ import { z } from "zod";
 
 const ProductSchema = z.object({
   id: z.number(),
-  title: z.string().min(1).max(20),
-  description: z.string().min(20),
+  title: z.string(),
+  description: z.string(),
   price: z.number(),
 });
 
@@ -18,9 +18,9 @@ export const ProductResponseSchema = ProductSchema;
 export type ProductResponse = z.infer<typeof ProductResponseSchema>;
 
 export const UpsertProductSchema = z.object({
-  title: z.string().min(1).max(20),
-  description: z.string().min(20),
-  price: z.number(), 
+  title: z.string().min(1),
+  description: z.string().min(1),
+  price: z.number().min(250),
 });
 
 export type UpsertProduct = z.infer<typeof UpsertProductSchema>;

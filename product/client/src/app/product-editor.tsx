@@ -1,6 +1,9 @@
+import { useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate, useParams } from "react-router-dom";
 
+import { useObservable } from "../utils";
 import { UpsertProductSchema, type UpsertProduct } from "../types";
 import { useAppStore } from "./app.context";
 
@@ -13,13 +16,35 @@ export const ProductEditor = () => {
   } = useForm<UpsertProduct>({ resolver: zodResolver(UpsertProductSchema) });
 
   const {
-    actions: { upsertProduct },
+    state: { activeProduct$ },
+    actions: { upsertProduct, setActiveProductById },
   } = useAppStore();
 
+  const activeProduct = useObservable(activeProduct$);
+
+  const navigate = useNavigate();
+
   const onSubmit: SubmitHandler<UpsertProduct> = (payload) => {
-    upsertProduct({ payload });
+    upsertProduct({ payload, id: activeProduct?.id });
     reset();
+    navigate("/");
   };
+
+  useEffect(() => {
+    if (activeProduct) reset(activeProduct);
+    else
+      reset({
+        title: "",
+        description: "",
+        price: 0,
+      });
+  }, [activeProduct]);
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    setActiveProductById(id);
+  }, [id]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -44,7 +69,11 @@ export const ProductEditor = () => {
         placeholder="Price..."
       />
       <p>{errors.price?.message}</p>
-      <input className="btn" type="submit" />
+      <input
+        className="btn"
+        type="submit"
+        value={activeProduct ? "save" : "create"}
+      />
     </form>
   );
 };

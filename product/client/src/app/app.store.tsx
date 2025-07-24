@@ -1,17 +1,18 @@
-import { shareReplay, Subject, switchMap, exhaustMap, merge } from "rxjs";
+import { shareReplay, Subject, switchMap, exhaustMap, merge, of, mergeMap } from "rxjs";
 
-import { getProducts, createProduct, updateProduct } from "../api";
+import { getProducts, createProduct, updateProduct, getProduct, deleteProduct } from "../api";
 import { withInitialValue } from "../utils";
 import type { UpsertProduct } from "../types";
 
 export const createProductStore = () => {
+  const setActiveProductById$ = new Subject<number | string | undefined>();
+
+  const activeProduct$ = setActiveProductById$.pipe(
+    switchMap((id) => id ? getProduct(id) : of(null)),
+    shareReplay(1)
+  );
+
   const refreshProducts$ = new Subject<void>();
-
-  // const createProduct$ = new Subject<UpsertProduct>();
-
-  // const createdProduct$ = createProduct$.pipe(
-  //   exhaustMap((payload) => createProduct(payload))
-  // );
 
   const upsertProduct$ = new Subject<{
     id?: number | string;
@@ -25,21 +26,32 @@ export const createProductStore = () => {
     shareReplay(1)
   );
 
-  const triggers$ = merge(refreshProducts$, upsertedProduct$);
+  const deleteProduct$ = new Subject<number | string>();
+
+  const deletedProduct$ = deleteProduct$.pipe(
+    // mergeMap((id) => deleteProduct(id)),
+    exhaustMap((id) => deleteProduct(id)),
+    shareReplay(1)
+  );
+
+  const triggers$ = merge(refreshProducts$, upsertedProduct$, deletedProduct$);
 
   const products$ = triggers$.pipe(
     switchMap(() => getProducts()),
     shareReplay(1)
   );
 
+  
+
+
   return {
     state: {
       products$: withInitialValue(products$, []),
       upsertedProduct$: withInitialValue(upsertedProduct$, null),
+      activeProduct$: withInitialValue(activeProduct$, null),
     },
     actions: {
       refreshProducts: () => refreshProducts$.next(),
-      // createProduct: (payload: UpsertProduct) => createProduct$.next(payload),
       upsertProduct: ({
         id,
         payload,
@@ -47,6 +59,9 @@ export const createProductStore = () => {
         id?: number | string;
         payload: UpsertProduct;
       }) => upsertProduct$.next({ id, payload }),
+      deleteProduct: (id: number | string) => deleteProduct$.next(id),
+      setActiveProductById: (id?: number | string) =>
+        setActiveProductById$.next(id),
     },
   };
 };

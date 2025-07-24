@@ -10,7 +10,7 @@ import { ProductEditor } from "./product-editor";
 export const AppView = () => {
   const {
     state: { products$ },
-    actions: { refreshProducts },
+    actions: { refreshProducts, deleteProduct },
   } = useAppStore();
 
   const products = useObservable(products$);
@@ -40,12 +40,13 @@ export const AppView = () => {
                 <td>{item.price}</td>
                 <td className="icons">
                   <MdOutlineDelete
-                  // onClick={() => deleteItem(item.id)}
+                    onClick={() => deleteProduct(item.id)}
+                    style={{ cursor: "pointer" }}
                   />
                   {/* <BiEditAlt
                   // onClick={() => editItem(item)}
                   /> */}
-                  <Link to="/edit">
+                  <Link to={`/${item.id}`}>
                     <BiEditAlt className="icon-black" />
                   </Link>
                 </td>

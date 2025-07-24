@@ -13,7 +13,10 @@ const BASE_URL = "http://localhost:3000";
 export const getProducts = () =>
   ajax.get<ProductsResponse>(`${BASE_URL}/products`).pipe(
     map(({ response }) => ProductsResponseSchema.parse(response)),
-    catchError(() => of([] as ProductsResponse))
+    catchError(() => of([] as ProductsResponse)),
+    map((products) =>
+      products.sort((a, b) => b.id - a.id) // Sort products by descending ID
+    )
   );
 
 export const getProduct = (id: number | string) =>
@@ -42,7 +45,7 @@ export const createProduct = (payload: UpsertProduct) =>
 export const updateProduct = (id: number | string, payload: UpsertProduct) =>
   ajax<ProductResponse>({
     url: `${BASE_URL}/products/${id}`,
-    method: "POST",
+    method: "PATCH",
     body: payload,
     headers: { "Content-Type": "application/json" },
   }).pipe(

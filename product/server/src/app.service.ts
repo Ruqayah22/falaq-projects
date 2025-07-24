@@ -11,7 +11,7 @@ export class AppService {
   }
 
   getAllProducts(): CreateProductDto[] {
-    return this.productItem;
+    return this.productItem; // Return in reverse order
   }
 
   createProduct(inputC: CreateProductDto): CreateProductDto {
