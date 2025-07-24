@@ -11,7 +11,7 @@ import {
 import type { CreateProductDto } from './create-cat.dto';
 import { AppService } from './app.service';
 
-@Controller('product')
+@Controller('products')
 export class CatsController {
   constructor(private appService: AppService) {}
 

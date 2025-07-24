@@ -1,147 +1,27 @@
-import { useForm, type SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-import { useAppStore } from "./app.context";
-import { useObservable } from "../utils";
-import "../style/index.css";
-import * as z from "zod";
-
-import { ajax } from "rxjs/ajax";
-import { catchError } from "rxjs/operators";
-import { of } from "rxjs";
-
 import { MdOutlineDelete } from "react-icons/md";
 import { BiEditAlt } from "react-icons/bi";
+import { Link } from "react-router-dom";
 
-const InputsSchema = z.object({
-  title: z.string().min(1).max(20),
-  description: z.string().min(20),
-  price: z.coerce.number(), //z.number(),
-});
+import { useObservable } from "../utils";
+import { useAppStore } from "./app.context";
+import { useEffect } from "react";
+import { ProductEditor } from "./product-editor";
 
-
-
-type Inputs = z.infer<typeof InputsSchema>;
-
-export default function AppView() {
+export const AppView = () => {
   const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<Inputs>({ resolver: zodResolver(InputsSchema) });
-
-  
-
-  const {
-    state: { items$ },
-    // actions: { addItem },
-    actions: {
-  addItem,
-  // editItem,
-  // deleteItem
-}
+    state: { products$ },
+    actions: { refreshProducts },
   } = useAppStore();
 
-  const registerItems = useObservable(items$);
+  const products = useObservable(products$);
 
-  
-  // const onSubmit: SubmitHandler<Inputs> = async (data) => {
-  //   try {
-  //     const res = await fetch("http://localhost:3000/product", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(data),
-  //     });
-
-  //     if (!res.ok) throw new Error("Submission failed");
-
-  //     const result = await res.json();
-  //     console.log("Server response:", result);
-
-  //     // You can update local RxJS state here too
-  //     // addItem(data.title);
-  //     // addItem(data.description);
-  //     // addItem(data.price.toString());
-  //     addItem(data);
-  //     reset();
-  //   } catch (err) {
-  //     console.error("AJAX submit error:", err);
-  //   }
-  // };
-
-  
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    ajax
-      .post("http://localhost:3000/product", data, {
-        "Content-Type": "application/json",
-      })
-      .pipe(
-        catchError((error) => {
-          console.error("AJAX submit error:", error);
-          return of(error); 
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          console.log("Server response:", response.response);
-          
-          // addItem(data.title);
-          // addItem(data.description);
-          // addItem(data.price.toString());
-
-          addItem(data);
-          reset();
-        },
-        error: (err) => {
-          console.error("Subscription error:", err);
-        },
-      });
-  };
-
-  // console.log(registerItems);
+  useEffect(() => {
+    refreshProducts();
+  }, []);
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input
-          aria-label="title"
-          className="inputText"
-          {...register("title")}
-          placeholder="Type something..."
-        />
-        <p>{errors.title?.message}</p>
-        <input
-          className="inputText"
-          {...register("description")}
-          placeholder="Type something..."
-        />
-        <p>{errors.description?.message}</p>
-        {/* <input
-          className="inputText"
-          {...register("price")}
-          placeholder="Type something..."
-        /> */}
-        <input
-          type="number"
-          step="any"
-          className="inputText"
-          {...register("price")}
-          placeholder="Price..."
-        />
-        <p>{errors.price?.message}</p>
-
-        <input className="btn" type="submit" />
-
-        {/* <ul>
-          {registerItems.map((item, index) => (
-            <li key={index}>{item}</li>
-          ))}
-        </ul> */}
-      </form>
-      {/* display data */}
+      <ProductEditor />
       <div className="ProductTable">
         <table>
           <thead>
@@ -153,18 +33,21 @@ export default function AppView() {
             </tr>
           </thead>
           <tbody>
-            {registerItems.map((item, index) => (
+            {products.map((item, index) => (
               <tr key={index}>
                 <td>{item.title}</td>
                 <td>{item.description}</td>
                 <td>{item.price}</td>
                 <td className="icons">
-                  <MdOutlineDelete 
-                  // onClick={() => deleteItem(item.id)} 
-                    />
-                  <BiEditAlt 
-                  // onClick={() => editItem(item)} 
-                    />
+                  <MdOutlineDelete
+                  // onClick={() => deleteItem(item.id)}
+                  />
+                  {/* <BiEditAlt
+                  // onClick={() => editItem(item)}
+                  /> */}
+                  <Link to="/edit">
+                    <BiEditAlt className="icon-black" />
+                  </Link>
                 </td>
               </tr>
             ))}
@@ -173,4 +56,4 @@ export default function AppView() {
       </div>
     </div>
   );
-}
+};

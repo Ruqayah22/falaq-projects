@@ -26,7 +26,11 @@ export class AppService {
     const index = this.productItem.findIndex((item) => item.id === id);
     if (index === -1) return null;
 
-    return (this.productItem[index] = productUpdate);
+    return (this.productItem[index] = {
+      ...this.productItem[index],
+      ...productUpdate,
+      id: this.productItem[index].id,
+    });
     // this.inputsR.push({ ...inputU, id: this.getNextId() });
     // return this.inputsR.slice(-1)[0];
   }
@@ -35,8 +39,7 @@ export class AppService {
     const index = this.productItem.findIndex((item) => item.id === id);
     if (index === -1) return null; // Not found
 
-    const deleted = this.productItem.splice(index, 1); // [0]
+    const deleted = this.productItem.splice(index, 1)[0]; // [0]
     return deleted;
   }
 }
-

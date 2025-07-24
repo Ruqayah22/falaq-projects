@@ -1,34 +1,52 @@
-import { scan, shareReplay, Subject } from "rxjs";
+import { shareReplay, Subject, switchMap, exhaustMap, merge } from "rxjs";
+
+import { getProducts, createProduct, updateProduct } from "../api";
 import { withInitialValue } from "../utils";
-
-
-type ProductItem = {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-};
+import type { UpsertProduct } from "../types";
 
 export const createProductStore = () => {
-  // const addItem$ = new Subject<string | number>();
-  const addItem$ = new Subject<ProductItem>();
+  const refreshProducts$ = new Subject<void>();
 
-  const items$ = addItem$.pipe(
-    // scan((items, item) => [...items, item], [] as Array<string | number>),
-    scan((items, item) => [...items, item], [] as Array<ProductItem>),
-    shareReplay()
+  // const createProduct$ = new Subject<UpsertProduct>();
+
+  // const createdProduct$ = createProduct$.pipe(
+  //   exhaustMap((payload) => createProduct(payload))
+  // );
+
+  const upsertProduct$ = new Subject<{
+    id?: number | string;
+    payload: UpsertProduct;
+  }>();
+
+  const upsertedProduct$ = upsertProduct$.pipe(
+    exhaustMap(({ id, payload }) =>
+      id ? updateProduct(id, payload) : createProduct(payload)
+    ),
+    shareReplay(1)
+  );
+
+  const triggers$ = merge(refreshProducts$, upsertedProduct$);
+
+  const products$ = triggers$.pipe(
+    switchMap(() => getProducts()),
+    shareReplay(1)
   );
 
   return {
     state: {
-      items$: withInitialValue(items$, []),
+      products$: withInitialValue(products$, []),
+      upsertedProduct$: withInitialValue(upsertedProduct$, null),
     },
     actions: {
-      // addItem: (item: string) => addItem$.next(item),
-      addItem: (item: ProductItem) => addItem$.next(item),
-      // editItem,
-      // deleteItem,
+      refreshProducts: () => refreshProducts$.next(),
+      // createProduct: (payload: UpsertProduct) => createProduct$.next(payload),
+      upsertProduct: ({
+        id,
+        payload,
+      }: {
+        id?: number | string;
+        payload: UpsertProduct;
+      }) => upsertProduct$.next({ id, payload }),
     },
   };
 };
-
