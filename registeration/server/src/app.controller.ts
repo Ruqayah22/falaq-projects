@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post,HttpCode, Param, ParseIntPipe, Delete, Patch } from '@nestjs/common';
 import { AppService } from './app.service';
 // import { create } from '../node_modules/@types/istanbul-reports/index.d';
 import { InputsSchema } from './register/register.module';
@@ -42,12 +42,31 @@ export class AppController {
   // create(@Body() input: InputsSchema) {
   //   this.appService.createInput(input);
   // }
+  @HttpCode(201)
   create(@Body() input: InputsSchema) {
-    this.appService.createInput(input);
-    return { message: 'Input saved successfully' };
+    return this.appService.createInput(input);
   }
   // create(@Body() input: InputsSchema) {
   //   const saved = this.appService.createInput(input);
   //   return { message: 'Input saved', data: saved };
   // }
+
+  @Get(':id')
+  // async getAllInputs(): Promise<InputsSchema[]> {
+  //   return await this.appService.getAllInputs();
+  // }
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.appService.findOne(id);
+  }
+@Patch(':id')
+update(@Param('id', ParseIntPipe) id: number,@Body() inputUpdate: InputsSchema){
+  return this.appService.update(id, inputUpdate)
+}
+  @Delete(':id')
+  // async getAllInputs(): Promise<InputsSchema[]> {
+  //   return await this.appService.getAllInputs();
+  // }
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.appService.deleteOne(id);
+  }
 }

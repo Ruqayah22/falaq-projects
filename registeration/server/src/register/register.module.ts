@@ -1,4 +1,5 @@
 export class InputsSchema {
+  id:number;
   firstName: string;
   lastName: string;
   email: string;
