@@ -20,10 +20,6 @@ export class CatsController {
     return this.appService.getAllProducts();
   }
 
-  // @Get('post')
-  // create(@Body() CreateProductDto: CreateProductDto) {
-  //   return this.appService.createProduct(CreateProductDto);
-  // }
   @Post()
   @HttpCode(201)
   create(@Body() CreateProductDto: CreateProductDto) {

@@ -43,9 +43,7 @@ export const AppView = () => {
                     onClick={() => deleteProduct(item.id)}
                     style={{ cursor: "pointer" }}
                   />
-                  {/* <BiEditAlt
-                  // onClick={() => editItem(item)}
-                  /> */}
+
                   <Link to={`/${item.id}`}>
                     <BiEditAlt className="icon-black" />
                   </Link>

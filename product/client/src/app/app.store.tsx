@@ -1,6 +1,12 @@
-import { shareReplay, Subject, switchMap, exhaustMap, merge, of, mergeMap } from "rxjs";
+import { shareReplay, Subject, switchMap, exhaustMap, merge, of } from "rxjs";
 
-import { getProducts, createProduct, updateProduct, getProduct, deleteProduct } from "../api";
+import {
+  getProducts,
+  createProduct,
+  updateProduct,
+  getProduct,
+  deleteProduct,
+} from "../api";
 import { withInitialValue } from "../utils";
 import type { UpsertProduct } from "../types";
 
@@ -8,7 +14,7 @@ export const createProductStore = () => {
   const setActiveProductById$ = new Subject<number | string | undefined>();
 
   const activeProduct$ = setActiveProductById$.pipe(
-    switchMap((id) => id ? getProduct(id) : of(null)),
+    switchMap((id) => (id ? getProduct(id) : of(null))),
     shareReplay(1)
   );
 
@@ -29,7 +35,6 @@ export const createProductStore = () => {
   const deleteProduct$ = new Subject<number | string>();
 
   const deletedProduct$ = deleteProduct$.pipe(
-    // mergeMap((id) => deleteProduct(id)),
     exhaustMap((id) => deleteProduct(id)),
     shareReplay(1)
   );
@@ -40,9 +45,6 @@ export const createProductStore = () => {
     switchMap(() => getProducts()),
     shareReplay(1)
   );
-
-  
-
 
   return {
     state: {
