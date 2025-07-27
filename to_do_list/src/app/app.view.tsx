@@ -5,10 +5,11 @@ import { Link } from "react-router-dom";
 import { useAppStore } from "./app.context";
 import { useObservable } from "../utils";
 import "../style/index.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ToDoForm } from "./toDo-form";
 
 export default function AppView() {
+  const [checkedIds, setCheckedIds] = useState<Array<string | number>>([]);
   const {
     state: { toDos$ },
     actions: { refreshToDos, deleteTodo },
@@ -20,65 +21,23 @@ export default function AppView() {
     refreshToDos();
   }, []);
 
+  const toggleChecked = (id: string | number) => {
+    setCheckedIds((prev) =>
+      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+    );
+  };
+const activeToDos = toDos.filter((item) => !checkedIds.includes(item.id));
+const completedToDos = toDos.filter((item) => checkedIds.includes(item.id));
   return (
-    // <div>
-    //   <ToDoForm/>
-    //   <div>
-    //     <ul>
-    //       {toDos.map((item, index) => (
-    //         <>
-    //         <li key={index}>{item.text}</li>
-    //         <MdOutlineDelete
-    //           onClick={() => deleteTodo(item.id)}
-    //           style={{ cursor: "pointer" }}
-    //         />
-
-    //         <Link to={`/${item.id}`}>
-    //           <BiEditAlt className="icon-black" />
-    //         </Link>
-    //         </>
-    //       ))}
-    //     </ul>
-    //   </div>
-    // </div>
-    // <div>
-    //   <ToDoForm />
-    //   <div>
-    //     <ul style={{ listStyle: "none", padding: 0 }}>
-    //       {toDos.map((item, index) => (
-    //         <li key={index} style={{ marginBottom: "10px" }}>
-    //           <div
-    //             style={{ display: "flex", alignItems: "center", gap: "10px" }}
-    //           >
-    //             <span style={{ flex: 1 }}>{item.text}</span>
-
-    //             <MdOutlineDelete
-    //               onClick={() => deleteTodo(item.id)}
-    //               style={{ cursor: "pointer" }}
-    //             />
-
-    //             <Link to={`/${item.id}`}>
-    //               <BiEditAlt
-    //                 className="icon-black"
-    //                 style={{ cursor: "pointer" }}
-    //               />
-    //             </Link>
-    //           </div>
-    //         </li>
-    //       ))}
-    //     </ul>
-    //   </div>
-    // </div>
     <div
-     style={{
+      style={{
         display: "flex",
         flexDirection: "column",
         gap: "20px",
-        marginTop: "50px"
-  
+        marginTop: "50px",
       }}
     >
-      <ToDoForm />
+      {/* <ToDoForm />
 
       <ul>
         {toDos.map((item, index) => (
@@ -100,7 +59,78 @@ export default function AppView() {
             </div>
           </li>
         ))}
+      </ul> */}
+
+      <ToDoForm />
+
+      {/* Active Todos */}
+      <ul>
+        {activeToDos.map((item) => (
+          <li key={item.id}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <input
+                type="checkbox"
+                checked={checkedIds.includes(item.id)}
+                onChange={() => toggleChecked(item.id)}
+                style={{ transform: "scale(2)", marginRight: "10px" }}
+              />
+              <span style={{ flex: 1 }}>{item.text}</span>
+
+              <MdOutlineDelete
+                onClick={() => deleteTodo(item.id)}
+                style={{ cursor: "pointer" }}
+              />
+              <Link to={`/${item.id}`}>
+                <BiEditAlt
+                  className="icon-black"
+                  style={{ cursor: "pointer", color: "black" }}
+                />
+              </Link>
+            </div>
+          </li>
+        ))}
       </ul>
+
+      {/* Completed Todos */}
+      {completedToDos.length > 0 && (
+        <>
+          <h4>Completed</h4>
+          <ul>
+            {completedToDos.map((item) => (
+              <li key={item.id}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    textDecoration: "line-through",
+                    opacity: 0.6,
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={true}
+                    onChange={() => toggleChecked(item.id)}
+                  />
+                  <span style={{ flex: 1 }}>{item.text}</span>
+
+                  <MdOutlineDelete
+                    onClick={() => deleteTodo(item.id)}
+                    style={{ cursor: "pointer" }}
+                  />
+                  <Link to={`/${item.id}`}>
+                    <BiEditAlt
+                      className="icon-black"
+                      style={{ cursor: "pointer", color: "black" }}
+                    />
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 }
+
