@@ -94,7 +94,7 @@ const completedToDos = toDos.filter((item) => checkedIds.includes(item.id));
       {/* Completed Todos */}
       {completedToDos.length > 0 && (
         <>
-          <h4>Completed</h4>
+          {/* <h1 style={{marginBottom: "0"}}>Completed</h1> */}
           <ul>
             {completedToDos.map((item) => (
               <li key={item.id}>
