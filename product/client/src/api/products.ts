@@ -8,7 +8,7 @@ import type {
   UpsertProduct,
 } from "../types/products";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = import.meta.env.VITE_SERVER_URL;  //"http://localhost:3000";
 
 export const getProducts = () =>
   ajax.get<ProductsResponse>(`${BASE_URL}/products`).pipe(
