@@ -42,9 +42,10 @@ export const AppView = () => {
                   <MdOutlineDelete
                     onClick={() => deleteProduct(item.id)}
                     style={{ cursor: "pointer" }}
+                    data-testid={`delete-${item.id}`}
                   />
 
-                  <Link to={`/${item.id}`}>
+                  <Link to={`/${item.id}`} data-testid={`edit-${item.id}`}>
                     <BiEditAlt className="icon-black" />
                   </Link>
                 </td>

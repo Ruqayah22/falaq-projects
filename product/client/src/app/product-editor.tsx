@@ -54,21 +54,29 @@ export const ProductEditor = () => {
         {...register("title")}
         placeholder="Type something..."
       />
-      <p>{errors.title?.message}</p>
+      <p aria-label="title-error" data-testid="error-title">
+        {errors.title?.message}
+      </p>
       <input
+        aria-label="description"
         className="inputText"
         {...register("description")}
         placeholder="Type something..."
       />
-      <p>{errors.description?.message}</p>
+      <p aria-label="description-error" data-testid="error-description">
+        {errors.description?.message}
+      </p>
       <input
+        aria-label="price"
         type="number"
         step="any"
         className="inputText"
         {...register("price", { valueAsNumber: true })}
         placeholder="Price..."
       />
-      <p>{errors.price?.message}</p>
+      <p aria-label="price-error" data-testid="error-price">
+        {errors.price?.message}
+      </p>
       <input
         className="btn"
         type="submit"
