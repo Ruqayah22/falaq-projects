@@ -94,13 +94,22 @@ describe("Testing products", () => {
     const submit = screen.getByRole("button", { name: /create/i });
     await userEvent.click(submit);
 
-    // screen.logTestingPlaygroundURL(); // for show the ui code 
+    // screen.logTestingPlaygroundURL(); // for show the ui code
 
     // const titleError = await screen.findByText(
     //   "Too small: expected string to have >=1 characters"
     // );
 
     const titleError = await screen.getByTestId("error-title");
+    expect(titleError.innerHTML).toBe(
+      "Too small: expected string to have &gt;=1 characters"
+    );
+    // console.log(titleError.innerHTML);
+    // console.log(
+    //   titleError.innerHTML ===
+    //     "Too small: expected string to have &gt;=1 characters"
+    // );
+    
     // const descriptionError = await screen.findByText(
     //   "Too small: expected string to have >=1 characters"
     // );
@@ -109,19 +118,20 @@ describe("Testing products", () => {
     //   /too small: expected string to have >=1 characters/i
     // );
     const descriptionError = await screen.getByTestId("error-description");
+    expect(descriptionError.innerHTML).toBe(
+      "Too small: expected string to have &gt;=1 characters"
+    );
+
 
     const priceError = await screen.findByText(
       "Too small: expected number to be >=250"
     );
+    expect(priceError).toBeDefined();
 
     // const priceError = await screen.getByText(
     //   /too small: expected number to be >=250/i
     // );
 
     // const priceError = await screen.getByTestId("error-price");
-
-    expect(titleError).toBeDefined();
-    expect(descriptionError).toBeDefined();
-    expect(priceError).toBeDefined();
   });
 });

@@ -66,6 +66,13 @@ export const ProductEditor = () => {
       <p aria-label="description-error" data-testid="error-description">
         {errors.description?.message}
       </p>
+
+      {/* {errors.description && (
+        <p aria-label="description-error" data-testid="error-description">
+          {errors.description.message}
+        </p>
+      )} */}
+
       <input
         aria-label="price"
         type="number"
